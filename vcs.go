@@ -171,8 +171,11 @@ func (v *VCS) listFiles(dir string) vcsFiles {
 				panic(err) // this should not happen
 			}
 
-			if pathEqual(filepath.Dir(path), dir) {
+			println("listFiles", path, dir, pathInVendorDirectory(path, dir))
+
+			if pathEqual(filepath.Dir(path), dir) || pathInVendorDirectory(path, dir) {
 				files[path] = true
+				continue
 			}
 		}
 	}

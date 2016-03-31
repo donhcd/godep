@@ -58,3 +58,21 @@ func pathEqual(a, b string) bool {
 	b = cleanPath(b)
 	return strings.EqualFold(a, b)
 }
+
+func pathInVendorDirectory(path, importingPackagePath string) bool {
+	importingPackageParts := strings.Split(cleanPath(importingPackagePath), "/")
+	// check if path is inside a vendor directory used by
+	// the importing package
+	pathParts := strings.Split(cleanPath(path), "/")
+	var firstDifferingPathIndex int
+	for i := 0; i < len(importingPackageParts)+1; i++ {
+		if i >= len(pathParts) ||
+			i >= len(importingPackageParts) ||
+			importingPackageParts[i] != pathParts[i] {
+			firstDifferingPathIndex = i
+			break
+		}
+	}
+
+	return firstDifferingPathIndex < len(pathParts) && pathParts[firstDifferingPathIndex] == "vendor"
+}

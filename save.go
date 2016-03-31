@@ -371,7 +371,12 @@ func copySrc(dir string, deps []Dependency) error {
 		// copy actual dependency
 		vf := dep.vcs.listFiles(dep.dir)
 		debugln("vf", vf)
-		w := fs.Walk(dep.dir)
+		dirRoot, err := dep.vcs.root(dep.dir)
+		if err != nil {
+			log.Println(err)
+			ok = false
+		}
+		w := fs.Walk(dirRoot)
 		for w.Step() {
 			err = copyPkgFile(vf, dir, srcdir, w)
 			if err != nil {
